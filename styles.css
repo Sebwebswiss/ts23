@@ -1,0 +1,45 @@
+body {
+    font-family: sans-serif;
+    color: #333;
+  }
+  
+  h1 {
+    font-size: 24px;
+    margin-top: 0;
+  }
+  
+  label {
+    font-size: 18px;
+    margin-bottom: 10px;
+  }
+  
+  input {
+    width: 100%;
+    padding: 10px;
+    border: 1px solid #ccc;
+  }
+  
+  button {
+    background-color: #000;
+    color: #fff;
+    padding: 10px;
+    border: none;
+    cursor: pointer;
+  }
+  
+  #pdfContainer {
+    width: 100%;
+    height: auto;
+  }
+  @media (max-width: 600px) {
+    #pdfContainer {
+      width: 100%;
+    }
+  }
+  
+  @media (min-width: 600px) {
+    #pdfContainer {
+      width: 80%;
+    }
+  }
+  
