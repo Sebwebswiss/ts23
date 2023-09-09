@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Visualisation des pages PDF</title>
+    <!-- <link rel="stylesheet" href="styles.css"> -->
+    <!-- Inclusion de pdf.js et pdf.worker.js -->
+    <script type="text/javascript" src="pdf.js"></script>
+    <script type="text/javascript" src="pdf.worker.js"></script>
+</head>
+<body>
+    <label for="serviceNumber">Entrez le numéro de service (ex. 210) :</label>
+    <input type="text" id="serviceNumber" placeholder="Entrez le numéro de service">
+    <button onclick="prikaziStranice()">Afficher les pages</button>
+    
+    <div id="pdfContainer"></div>
+    
+    <script>
+        // Chemin vers le fichier PDF
+        const pdfPath = 'SVE.pdf';
+
+        // Mappage du numéro de service vers les pages dans le PDF
+        const servisToPages = {
+            210: [1, 2],
+            222: [34, 35, 36],
+            // Ajoutez d'autres services et leurs pages correspondantes ici
+        };
+
+        // Fonction pour afficher les pages sélectionnées
+        async function prikaziStranice() {
+            const serviceNumber = document.getElementById('serviceNumber').value;
+            const pdfContainer = document.getElementById('pdfContainer');
+            
+            // Vérifiez si un numéro de service a été saisi
+            if (!/^\d+$/.test(serviceNumber)) {
+                alert('Numéro de service invalide.');
+                return;
+            }
+
+            // Conversion du numéro de service en pages correspondantes
+            const pages = servisToPages[parseInt(serviceNumber)];
+
+            // Vérifiez si une correspondance existe dans le mappage
+            if (!pages) {
+                alert('Aucune donnée disponible pour ce numéro de service.');
+                return;
+            }
+
+            // Chargement du fichier PDF
+            const pdf = await pdfjsLib.getDocument(pdfPath).promise;
+
+            // Supprimez les pages précédemment affichées (si elles existent)
+            pdfContainer.innerHTML = '';
+
+            // Affichage des pages sélectionnées
+            for (const pageNumber of pages) {
+                const page = await pdf.getPage(pageNumber);
+                const scale =0.67; // Ajustez l'échelle selon vos besoins
+                const viewport = page.getViewport({ scale });
+                const canvas = document.createElement('canvas');
+                canvas.width = viewport.width;
+                canvas.height = viewport.height;
+                const context = canvas.getContext('2d');
+                await page.render({ canvasContext: context, viewport }).promise;
+                pdfContainer.appendChild(canvas);
+            }
+        }
+    </script>
+</body>
+</html>
